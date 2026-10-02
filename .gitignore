@@ -1,0 +1,17 @@
+node_modules
+.next
+dist
+out
+coverage
+.turbo
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store
+next-env.d.ts
+dump.rdb
+
+# Local Claude setup (skills, agents, instructions)
+.claude/
+CLAUDE.md
