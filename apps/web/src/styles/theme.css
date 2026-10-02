@@ -1,0 +1,116 @@
+/* Brand palette. Replace these values to rebrand; every utility (bg-brand-500, text-brand-700 ...) and HeroUI accent follows. */
+@theme {
+  --color-brand-50: oklch(0.975 0.009 78.25);
+  --color-brand-100: oklch(0.949 0.018 78.23);
+  --color-brand-200: oklch(0.89 0.046 80.04);
+  --color-brand-300: oklch(0.837 0.063 81.06);
+  --color-brand-400: oklch(0.786 0.06 81.31);
+  --color-brand-500: oklch(0.728 0.055 80.98);
+  --color-brand-600: oklch(0.613 0.046 82.27);
+  --color-brand-700: oklch(0.492 0.037 80.68);
+  --color-brand-800: oklch(0.372 0.029 81.81);
+  --color-brand-900: oklch(0.26 0.02 80.31);
+  --color-brand-950: oklch(0.198 0.015 81.47);
+
+  /* Typography: primary for UI text, secondary for display moments. */
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-secondary: "Red Rose Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion: short and soft. Everything respects prefers-reduced-motion below. */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-enter: enter 360ms var(--ease-out-soft) both;
+  --animate-shimmer: shimmer 1.4s linear infinite;
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+      filter: blur(2px);
+    }
+  }
+
+  @keyframes shimmer {
+    from {
+      background-position: 150% 0;
+    }
+    to {
+      background-position: -50% 0;
+    }
+  }
+}
+
+/* Maps the brand onto HeroUI's semantic tokens. */
+:root,
+[data-theme="light"] {
+  --accent: var(--color-brand-700);
+  --accent-foreground: var(--color-brand-50);
+}
+
+.dark,
+[data-theme="dark"] {
+  --accent: var(--color-brand-400);
+  --accent-foreground: var(--color-brand-950);
+}
+
+/* Illustrations: accent comes from currentColor, neutrals from these variables. */
+.illustration {
+  --ill-ink: var(--color-brand-900);
+  --ill-muted: var(--color-brand-300);
+  --ill-surface: var(--color-brand-100);
+  --ill-paper: var(--color-surface);
+  color: var(--color-accent);
+}
+
+.dark .illustration,
+[data-theme="dark"] .illustration {
+  --ill-ink: var(--color-brand-500);
+  --ill-muted: var(--color-brand-800);
+  --ill-surface: color-mix(in oklab, var(--color-brand-50) 10%, transparent);
+}
+
+/* Skeleton shimmer, tuned per theme. */
+.skeleton {
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in oklab, var(--color-foreground) 7%, transparent) 50%,
+      transparent 100%
+    )
+    var(--color-default);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* Route progress bar (nprogress). */
+#nprogress {
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 9999;
+  height: 3px;
+  background: var(--accent);
+}
+
+#nprogress .peg {
+  position: absolute;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow:
+    0 0 10px var(--accent),
+    0 0 5px var(--accent);
+  transform: rotate(3deg) translate(0, -4px);
+}

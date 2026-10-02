@@ -1,0 +1,30 @@
+Bedrock
+Copyright (c) Gayuh Kautaman. All rights reserved.
+
+PROPRIETARY AND CONFIDENTIAL
+
+This software, including its source code, documentation, configuration, design
+assets and any derived works (together, the "Software"), is the property of
+Gayuh Kautaman (the "Owner").
+
+No license or right is granted to any person to use, copy, modify, merge,
+publish, distribute, sublicense, sell, host, or create derivative works of the
+Software, in whole or in part, without the prior written permission of the
+Owner. Access to the Software, for example through a shared repository, does
+not by itself grant any such right.
+
+Any permission the Owner grants must be in writing and applies only to the
+scope stated in it. All rights not expressly granted are reserved by the Owner.
+
+Third party components included with or used by the Software (such as open
+source packages listed in package.json and bun.lock, and the illustrations from
+unDraw) remain under their own licenses. This notice does not change the terms
+of those components.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+OWNER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF
+OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+For permission requests, contact the Owner.

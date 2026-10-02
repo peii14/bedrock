@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "../styles/theme.css";
+
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+}

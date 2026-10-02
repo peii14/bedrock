@@ -1,0 +1,65 @@
+# Rendered at startup by the nginx image (envsubst): ${SERVER_NAME} comes from the environment.
+
+server {
+  listen 80;
+  server_name ${SERVER_NAME};
+
+  location /.well-known/acme-challenge/ {
+    root /var/www/acme;
+  }
+
+  location = /nginx-health {
+    access_log off;
+    return 200 "ok\n";
+  }
+
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+
+server {
+  listen 443 ssl;
+  listen 443 quic reuseport;
+  http2 on;
+  http3 on;
+  server_name ${SERVER_NAME};
+
+  include /etc/nginx/snippets/ssl.conf;
+  add_header Alt-Svc 'h3=":443"; ma=86400' always;
+  limit_conn per_ip 50;
+
+  location /api/auth/ {
+    limit_req zone=req_auth burst=20 nodelay;
+    include /etc/nginx/snippets/proxy.conf;
+    proxy_pass http://api;
+  }
+
+  location /api/ {
+    limit_req zone=req_api burst=60 nodelay;
+    include /etc/nginx/snippets/proxy.conf;
+    proxy_pass http://api;
+  }
+
+  # Hashed build assets never change, so cache them at the edge for a year.
+  location /_next/static/ {
+    proxy_cache static;
+    proxy_cache_valid 200 365d;
+    proxy_cache_use_stale error timeout updating http_502 http_503;
+    proxy_cache_lock on;
+    proxy_ignore_headers Vary;
+    proxy_hide_header Cache-Control;
+    proxy_hide_header Vary;
+    add_header Cache-Control "public, max-age=31536000, immutable" always;
+    add_header X-Cache $upstream_cache_status always;
+    include /etc/nginx/snippets/proxy.conf;
+    # Fetch uncompressed so one cached copy serves every client; nginx compresses on the way out.
+    proxy_set_header Accept-Encoding "";
+    proxy_pass http://web;
+  }
+
+  location / {
+    include /etc/nginx/snippets/proxy.conf;
+    proxy_pass http://web;
+  }
+}
