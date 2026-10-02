@@ -13,6 +13,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  commits:
+    name: Commit messages
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with: { fetch-depth: 0 }
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: package.json }
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - run: >
+          bunx commitlint --verbose
+          --from ${{ github.event.pull_request.base.sha }}
+          --to ${{ github.event.pull_request.head.sha }}
+
   verify:
     runs-on: ubuntu-latest
     services:
@@ -36,6 +51,7 @@ jobs:
         with: { bun-version-file: package.json }
       - run: bun install --frozen-lockfile
       - run: bun run check
+      - run: bun run scan:secrets
       - run: bun run typecheck
       - name: Test secrets
         run: |
@@ -55,6 +71,7 @@ jobs:
           - { name: api, file: docker/api.Dockerfile, target: api }
           - { name: migrate, file: docker/api.Dockerfile, target: migrate }
           - { name: web, file: docker/web.Dockerfile, target: web }
+          - { name: nginx, file: docker/nginx/Dockerfile, target: "" }
     steps:
       - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3
@@ -67,7 +84,7 @@ jobs:
           load: true
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
-      - uses: aquasecurity/trivy-action@0.33.1
+      - uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: starter-${{ matrix.name }}:ci
           severity: HIGH,CRITICAL
