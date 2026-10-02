@@ -24,8 +24,15 @@ services:
     restart: unless-stopped
     read_only: true
     security_opt: ["no-new-privileges:true"]
-    tmpfs: [/tmp, /var/run, /var/cache/nginx, /etc/nginx/conf.d, /etc/nginx/certs]
-    ports: ["80:80", "443:443", "443:443/udp"]
+    cap_drop: [ALL]
+    ulimits:
+      nofile: { soft: 65535, hard: 65535 }
+    tmpfs:
+      - /tmp:uid=101,gid=101
+      - /var/cache/nginx:uid=101,gid=101
+      - /etc/nginx/conf.d:uid=101,gid=101
+      - /etc/nginx/certs:uid=101,gid=101
+    ports: ["80:8080", "443:8443", "443:8443/udp"]
     environment:
       SERVER_NAME: ${SERVER_NAME:-localhost}
     volumes:

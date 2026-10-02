@@ -1,7 +1,7 @@
 # Rendered at startup by the nginx image (envsubst): ${SERVER_NAME} comes from the environment.
 
 server {
-  listen 80;
+  listen 8080;
   server_name ${SERVER_NAME};
 
   location /.well-known/acme-challenge/ {
@@ -19,8 +19,8 @@ server {
 }
 
 server {
-  listen 443 ssl;
-  listen 443 quic reuseport;
+  listen 8443 ssl;
+  listen 8443 quic reuseport;
   http2 on;
   http3 on;
   server_name ${SERVER_NAME};
