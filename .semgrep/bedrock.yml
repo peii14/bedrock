@@ -1,0 +1,52 @@
+# Project rules on top of the Semgrep registry packs. Each rule maps to a line in the security or code-quality skill.
+rules:
+  - id: bedrock-no-raw-sql
+    message: sql.raw bypasses parameter binding. Use Drizzle builders or the sql template tag.
+    severity: ERROR
+    languages: [typescript]
+    pattern-either:
+      - pattern: sql.raw(...)
+      - patterns:
+          - pattern: $DB.execute($Q)
+          - pattern-not: $DB.execute(sql`...`)
+          - pattern-not: $DB.execute("...")
+
+  - id: bedrock-no-dangerous-html
+    message: dangerouslySetInnerHTML opens an XSS path. Render text or sanitize on the server.
+    severity: ERROR
+    languages: [typescript]
+    pattern: <$EL dangerouslySetInnerHTML={...} />
+
+  - id: bedrock-no-eval
+    message: Dynamic code execution is not allowed.
+    severity: ERROR
+    languages: [typescript]
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+
+  - id: bedrock-env-through-config
+    message: Read configuration from the validated env in env.ts or @repo/config, not process.env.
+    severity: WARNING
+    languages: [typescript]
+    paths:
+      include: [apps/api/src/, packages/auth/src/]
+      exclude: [apps/api/src/env.ts, "*.test.ts"]
+    patterns:
+      - pattern: process.env.$NAME
+      - pattern-not: process.env.NODE_ENV
+
+  - id: bedrock-api-use-logger
+    message: Use the structured logger so secrets are redacted.
+    severity: WARNING
+    languages: [typescript]
+    paths:
+      include: [apps/api/src/]
+      exclude: [apps/api/src/lib/logger.ts, apps/api/src/scripts/]
+    pattern: console.$METHOD(...)
+
+  - id: bedrock-no-client-secret-env
+    message: NEXT_PUBLIC_ variables ship to the browser. Never put secrets in them.
+    severity: ERROR
+    languages: [typescript]
+    pattern-regex: process\.env\.NEXT_PUBLIC_\w*(SECRET|TOKEN|KEY|PASSWORD|PEPPER)\w*

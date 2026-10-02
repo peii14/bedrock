@@ -21,13 +21,23 @@
     "db:seed": "bun --env-file=.env --filter @repo/api db:seed",
     "db:studio": "bun --env-file=.env --filter @repo/db db:studio",
     "secrets": "bun scripts/generate-secrets.ts",
-    "prepare": "lefthook install || true"
+    "prepare": "lefthook install || true",
+    "lint:commits": "commitlint --from origin/main --to HEAD --verbose",
+    "scan:secrets": "secretlint \"**/*\"",
+    "scan:sast": "semgrep scan --config p/typescript --config p/nodejs --config p/owasp-top-ten --config .semgrep --error --metrics off",
+    "scan:deps": "bun audit --audit-level=high",
+    "scan": "bun run scan:secrets && bun run scan:deps"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
+    "@commitlint/types": "21.2.3",
+    "@secretlint/secretlint-rule-preset-recommend": "13.0.6",
     "@types/bun": "1.4.2",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "lefthook": "2.1.16",
+    "secretlint": "13.0.6",
     "turbo": "2.11.6",
     "typescript": "7.0.2"
   }
