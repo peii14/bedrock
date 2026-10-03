@@ -9,7 +9,7 @@ if (!url) throw new Error("DATABASE_URL is required");
 
 const client = new SQL({ url, max: 1 });
 await migrate(drizzle({ client }), {
-  migrationsFolder: new URL("../drizzle", import.meta.url).pathname,
+  migrationsFolder: process.env.MIGRATIONS_DIR ?? new URL("../drizzle", import.meta.url).pathname,
 });
 await client.close();
 console.info("Migrations applied");

@@ -1,9 +1,7 @@
 [install]
 exact = true
 linker = "isolated"
-
-[install.security]
-minimumReleaseAge = 86400
+minimumReleaseAge = 604800
 
 [test]
 coverage = false

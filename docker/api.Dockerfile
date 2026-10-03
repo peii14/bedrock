@@ -14,12 +14,14 @@ COPY --from=prune /app/out/json/ .
 RUN --mount=type=cache,target=/root/.bun/install/cache bun install --frozen-lockfile --ignore-scripts
 COPY --from=prune /app/out/full/ .
 RUN cd apps/api && bun run build
+RUN bun build packages/db/src/migrate.ts --compile --minify --target bun --outfile dist/migrate
 
-FROM base AS migrate
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/packages ./packages
-USER bun
-CMD ["bun", "packages/db/src/migrate.ts"]
+FROM gcr.io/distroless/cc-debian12:nonroot AS migrate
+WORKDIR /app
+COPY --from=build /app/dist/migrate ./migrate
+COPY --from=build /app/packages/db/drizzle ./drizzle
+ENV MIGRATIONS_DIR=/app/drizzle
+ENTRYPOINT ["/app/migrate"]
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS api
 WORKDIR /app
