@@ -66,8 +66,13 @@ jobs:
           scan-type: config
           scan-ref: .
           severity: HIGH,CRITICAL
-          exit-code: "1"
+          format: json
+          output: trivy-config.json
+          exit-code: "0"
+      - name: Report config findings
+        run: python3 scripts/ci/report-findings.py trivy trivy-config.json
       - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        if: ${{ !cancelled() }}
         with:
           scan-type: fs
           scan-ref: .
@@ -78,4 +83,5 @@ jobs:
           output: trivy-fs.json
           exit-code: "0"
       - name: Report filesystem findings
+        if: ${{ !cancelled() }}
         run: python3 scripts/ci/report-findings.py trivy trivy-fs.json

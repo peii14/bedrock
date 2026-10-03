@@ -21,6 +21,7 @@ WORKDIR /app
 COPY --from=build /app/dist/migrate ./migrate
 COPY --from=build /app/packages/db/drizzle ./drizzle
 ENV MIGRATIONS_DIR=/app/drizzle
+USER nonroot
 ENTRYPOINT ["/app/migrate"]
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS api
@@ -28,4 +29,5 @@ WORKDIR /app
 COPY --from=build /app/apps/api/dist/server ./server
 ENV NODE_ENV=production PORT=4000
 EXPOSE 4000
+USER nonroot
 ENTRYPOINT ["/app/server"]
