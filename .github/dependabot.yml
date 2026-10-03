@@ -3,12 +3,18 @@ updates:
   - package-ecosystem: bun
     directory: /
     schedule: { interval: weekly }
+    cooldown:
+      default-days: 7
     groups:
       minor-and-patch: { update-types: [minor, patch] }
     open-pull-requests-limit: 10
   - package-ecosystem: docker
     directories: [/docker, /docker/nginx]
     schedule: { interval: weekly }
+    cooldown:
+      default-days: 7
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly }
+    cooldown:
+      default-days: 7
