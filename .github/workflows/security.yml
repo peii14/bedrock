@@ -20,7 +20,7 @@ jobs:
     name: Secrets (gitleaks, full history)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
       - name: Install gitleaks
         run: curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz | tar -xz gitleaks
@@ -31,29 +31,36 @@ jobs:
     runs-on: ubuntu-latest
     container: semgrep/semgrep:1.179.0
     steps:
-      - uses: actions/checkout@v5
-      - run: >
-          semgrep scan --error --metrics off
+      - uses: actions/checkout@v7
+      - name: Scan
+        run: >
+          semgrep scan --metrics off --json --output semgrep.json
           --config p/typescript --config p/nodejs --config p/owasp-top-ten --config p/secrets
-          --config .semgrep
+          --config .semgrep || true
+      - name: Report findings
+        run: python3 scripts/ci/report-findings.py semgrep semgrep.json
 
   dependencies:
     name: Dependencies (bun audit + OSV)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with: { bun-version-file: package.json }
       - run: bun install --frozen-lockfile --ignore-scripts
       - run: bun audit --audit-level=high
       - name: OSV scanner
-        run: docker run --rm -v "$PWD:/src" ghcr.io/google/osv-scanner:v2.6.0 scan source -r /src
+        run: >
+          docker run --rm -v "$PWD:/src" ghcr.io/google/osv-scanner:v2.6.0
+          scan source -r /src --format json --output /src/osv.json || true
+      - name: Report OSV findings
+        run: python3 scripts/ci/report-findings.py osv osv.json
 
   config:
     name: Docker, compose and nginx config (Trivy)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
@@ -67,4 +74,8 @@ jobs:
           scanners: vuln,secret
           severity: HIGH,CRITICAL
           ignore-unfixed: true
-          exit-code: "1"
+          format: json
+          output: trivy-fs.json
+          exit-code: "0"
+      - name: Report filesystem findings
+        run: python3 scripts/ci/report-findings.py trivy trivy-fs.json
