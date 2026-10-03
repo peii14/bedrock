@@ -1,13 +1,7 @@
+# bun is left out until Dependabot reads bun.lock v2 (dependabot/dependabot-core#16071).
+# Dependency CVEs are still caught by bun audit and OSV in the Security workflow.
 version: 2
 updates:
-  - package-ecosystem: bun
-    directory: /
-    schedule: { interval: weekly }
-    cooldown:
-      default-days: 7
-    groups:
-      minor-and-patch: { update-types: [minor, patch] }
-    open-pull-requests-limit: 10
   - package-ecosystem: docker
     directories: [/docker, /docker/nginx]
     schedule: { interval: weekly }
