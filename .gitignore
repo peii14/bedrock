@@ -12,6 +12,7 @@ coverage
 next-env.d.ts
 dump.rdb
 
-# Local Claude setup (skills, agents, instructions)
-.claude/
+# Local Claude setup (agents, settings, instructions); skills are shared
+.claude/*
+!.claude/skills/
 CLAUDE.md
