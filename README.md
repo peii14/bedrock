@@ -2,6 +2,17 @@
 
 Full stack starter on Bun: Next.js 16 + HeroUI, an Elysia API with end to end types, Better Auth (Argon2id + pepper), Postgres via Drizzle, and nginx in Docker.
 
+## Use as a template
+
+Click **Use this template** on GitHub, or:
+
+```bash
+gh repo create my-app --template peii14/bedrock --private --clone
+cd my-app && bun install    # also installs the git hooks
+```
+
+Then make it yours: set `name` in the root `package.json`, update the title here and the owner in `LICENSE`, and pick your brand palette in `apps/web/src/styles/theme.css`. CI and the security scans need no secrets, so they run on the first push.
+
 ## Quick start
 
 ```bash
