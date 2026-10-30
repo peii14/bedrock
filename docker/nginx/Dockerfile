@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 # Build from the repo root: docker build -f docker/nginx/Dockerfile .
 # Unprivileged image: runs as uid 101 and listens on 8080/8443; compose maps 80/443 onto them.
-FROM nginxinc/nginx-unprivileged:1.31.6-alpine
+FROM nginxinc/nginx-unprivileged:1.31.7-alpine
 USER root
 RUN apk upgrade --no-cache \
   && apk add --no-cache openssl \
